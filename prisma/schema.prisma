@@ -1,17 +1,38 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
     provider = "prisma-client-js"
 }
 
 datasource db {
-    provider = "sqlite"
-    url      = env("DATABASE_URL")
+    provider = "mongodb"
+    url      = env("MONGODB_URL")
 }
 
-model Example {
-    id        String   @id @default(cuid())
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+model Notes {
+    id          String      @id @default(auto()) @map("_id") @db.ObjectId
+    title       String
+    description String
+    createdAt   DateTime    @default(now())
+    updatedAt   DateTime    @updatedAt
+    tagIDs      String[]    @db.ObjectId
+    tags        Tags[]      @relation(fields: [tagIDs], references: [id])
+    as_source   Relations[] @relation("source")
+    as_target   Relations[] @relation("target")
+}
+
+model Relations {
+    id       String  @id @default(auto()) @map("_id") @db.ObjectId
+    sourceID String  @db.ObjectId
+    source   Notes   @relation("source", fields: [sourceID], references: [id])
+    targetID String  @db.ObjectId
+    target   Notes   @relation("target", fields: [targetID], references: [id])
+    legend   String?
+}
+
+model Tags {
+    id      String   @id @default(auto()) @map("_id") @db.ObjectId
+    name    String   @unique
+    noteIDs String[] @db.ObjectId
+    notes   Notes[]  @relation(fields: [noteIDs], references: [id])
 }
