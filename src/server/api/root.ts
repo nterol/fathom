@@ -1,7 +1,6 @@
 import { router } from "@/server/api/trpc";
 import { notesRouter } from "./routers/notes";
 import { tagsRouter } from "./routers/tags";
-import { relationsRouter } from "./routers/relations";
 
 /**
  * This is the primary router for your server.
@@ -11,7 +10,6 @@ import { relationsRouter } from "./routers/relations";
 export const appRouter = router({
   notes: notesRouter,
   tags: tagsRouter,
-  relations: relationsRouter,
 });
 
 // export type definition of API

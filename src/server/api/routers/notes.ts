@@ -26,6 +26,18 @@ export const notesRouter = router({
         throw new Error("Error at create new note");
       }
     }),
+  createRelation: publicProcedure
+    .input(z.object({ sourceID: z.string(), targetID: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      try {
+        return await ctx.prisma.notes.update({
+          where: { id: input.sourceID },
+          data: { pointsAt: { connect: { id: input.targetID } } },
+        });
+      } catch (error) {
+        throw new Error("Error at create new note");
+      }
+    }),
   get: router({
     byID: publicProcedure
       .input(z.object({ id: z.string() }))
@@ -48,8 +60,10 @@ export const notesRouter = router({
               title: true,
               description: true,
               createdAt: true,
-              as_target: true,
-              as_source: true,
+              pointedByIDs: true,
+              pointedBy: true,
+              pointsAt: true,
+              pointsAtIDs: true,
             },
           });
         } catch (error) {

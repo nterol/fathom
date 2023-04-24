@@ -4,11 +4,12 @@ import { MiniThumbnail } from "./thumbnail";
 
 function NodeList({ currentNoteID }: GraphColumnProps) {
   const { data: allNotes, isLoading } = api.notes.get.all.useQuery();
-
-  const addRelation = api.relations.create.useMutation({});
-
-  const [showInput, setShowInput] = useState<string, null>(null);
-  const [legend, setLegend] = useState("");
+  const createRelation = api.notes.createRelation.useMutation();
+  function handleCreateRelation({ id }: { id: string }) {
+    return function () {
+      createRelation.mutate({ sourceID: currentNoteID, targetID: id });
+    };
+  }
 
   return (
     <>
@@ -24,14 +25,9 @@ function NodeList({ currentNoteID }: GraphColumnProps) {
               <div
                 className="flex flex-col gap-1"
                 key={note.id}
-                onClick={() => setShowInput(note.id)}
+                onClick={handleCreateRelation({ id: note.id })}
               >
                 <MiniThumbnail note={note} />
-                <input
-                  data-active={note.id === showInput}
-                  placeholder="relation légende"
-                  className="h-0 rounded-lg px-2 py-4 transition-all data-[active=true]:h-4"
-                />
               </div>
             )
           )
