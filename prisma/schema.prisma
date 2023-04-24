@@ -10,25 +10,41 @@ datasource db {
 }
 
 model Notes {
-    id          String      @id @default(auto()) @map("_id") @db.ObjectId
+    id          String     @id @default(auto()) @map("_id") @db.ObjectId
     title       String
     description String
-    createdAt   DateTime    @default(now())
-    updatedAt   DateTime    @updatedAt
-    tagIDs      String[]    @db.ObjectId
-    tags        Tags[]      @relation(fields: [tagIDs], references: [id])
-    as_source   Relations[] @relation("source")
-    as_target   Relations[] @relation("target")
+    createdAt   DateTime   @default(now())
+    updatedAt   DateTime   @updatedAt
+    tagIDs      String[]   @db.ObjectId
+    tags        Tags[]     @relation(fields: [tagIDs], references: [id])
+    targets     Register[] @relation("targets")
+    targetedBy  Register[] @relation("targetedBy")
 }
 
-model Relations {
-    id       String  @id @default(auto()) @map("_id") @db.ObjectId
-    sourceID String  @db.ObjectId
-    source   Notes   @relation("source", fields: [sourceID], references: [id])
-    targetID String  @db.ObjectId
-    target   Notes   @relation("target", fields: [targetID], references: [id])
-    legend   String?
+model Register {
+    id           String @id @default(auto()) @map("_id") @db.ObjectId
+    info         String
+    targeter     Notes  @relation("targets", fields: [targeterID], references: [id])
+    targeterID   String @db.ObjectId
+    targetedBy   Notes  @relation("targetedBy", fields: [targetedByID], references: [id])
+    targetedByID String @db.ObjectId
 }
+
+// model Nodes {
+//     id         String     @id @default(auto()) @map("_id") @db.ObjectId
+//     name       String
+//     targets    Register[] @relation("targets")
+//     targetedBy Register[] @relation("targetedBy")
+// }
+
+// model Register {
+//     id           String @id @default(auto()) @map("_id") @db.ObjectId
+//     legend       String
+//     targeter     Nodes  @relation("targets", fields: [targeterID], references: [id])
+//     targeterID   String @db.ObjectId
+//     targetedBy   Nodes  @relation("targetedBy", fields: [targetedByID], references: [id])
+//     targetedByID String @db.ObjectId
+// }
 
 model Tags {
     id      String   @id @default(auto()) @map("_id") @db.ObjectId
