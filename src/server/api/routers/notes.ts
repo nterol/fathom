@@ -1,6 +1,5 @@
 import { z } from "zod";
 import { publicProcedure, router } from "../trpc";
-import { TRPCError } from "@trpc/server";
 
 const noteInput = {
   title: z
@@ -37,29 +36,7 @@ export const notesRouter = router({
           console.log("Error lol");
         }
       }),
-    byIDWithGraph: publicProcedure
-      .input(z.object({ id: z.string() }))
-      .query(async ({ ctx, input }) => {
-        try {
-          return await ctx.prisma.notes.findUnique({
-            where: { id: input.id },
-            select: {
-              id: true,
-              title: true,
-              description: true,
-              createdAt: true,
-              as_target: true,
-              as_source: true,
-            },
-          });
-        } catch (error) {
-          console.log("Error lol");
-          throw new TRPCError({
-            message: "Could not note with graph",
-            code: "INTERNAL_SERVER_ERROR",
-          });
-        }
-      }),
+
     all: publicProcedure.query(async ({ ctx }) => {
       try {
         return await ctx.prisma.notes.findMany({

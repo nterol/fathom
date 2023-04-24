@@ -5,7 +5,7 @@ import Head from "next/head";
 import Link from "next/link";
 
 function useAllNotes(): {
-  allNotes: { id: string; title: string }[] | undefined;
+  allNotes: { id: string; title: string | null }[] | undefined;
   isLoading: boolean;
 } {
   // const apiContext = api.useContext();
@@ -15,7 +15,9 @@ function useAllNotes(): {
 }
 
 export default function Home() {
-  const { allNotes, isLoading } = useAllNotes();
+  const { allNotes = [], isLoading } = useAllNotes();
+
+  console.log(allNotes);
 
   const deleteNote = api.notes.delete.useMutation({});
 
@@ -25,16 +27,11 @@ export default function Home() {
     };
   }
 
-  const { data: relationData, isLoading: graphLoading } =
-    api.relations.get.all.useQuery();
-
-  console.log({ graphLoading, relationData });
-
   return (
     <>
       <Head>
-        <title>Stupid note app</title>
-        <meta name="description" content="Stupid note app" />
+        <title>Fathom</title>
+        <meta name="description" content="Fathom" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="mx-auto flex min-h-screen flex-col justify-center gap-4 py-10 md:container">

@@ -10,24 +10,24 @@ datasource db {
 }
 
 model Notes {
-    id          String     @id @default(auto()) @map("_id") @db.ObjectId
-    title       String
-    description String
-    createdAt   DateTime   @default(now())
-    updatedAt   DateTime   @updatedAt
-    tagIDs      String[]   @db.ObjectId
-    tags        Tags[]     @relation(fields: [tagIDs], references: [id])
-    targets     Register[] @relation("targets")
-    targetedBy  Register[] @relation("targetedBy")
+    id          String      @id @default(auto()) @map("_id") @db.ObjectId
+    title       String?
+    description String?
+    createdAt   DateTime    @default(now())
+    updatedAt   DateTime    @updatedAt
+    tagIDs      String[]    @db.ObjectId
+    tags        Tags[]      @relation(fields: [tagIDs], references: [id])
+    targets     Relations[] @relation("targets")
+    targetedBy  Relations[] @relation("targetedBy")
 }
 
-model Register {
-    id           String @id @default(auto()) @map("_id") @db.ObjectId
-    info         String
-    targeter     Notes  @relation("targets", fields: [targeterID], references: [id])
-    targeterID   String @db.ObjectId
-    targetedBy   Notes  @relation("targetedBy", fields: [targetedByID], references: [id])
-    targetedByID String @db.ObjectId
+model Relations {
+    id           String  @id @default(auto()) @map("_id") @db.ObjectId
+    info         String?
+    targeter     Notes   @relation("targets", fields: [targeterID], references: [id])
+    targeterID   String  @db.ObjectId
+    targetedBy   Notes   @relation("targetedBy", fields: [targetedByID], references: [id])
+    targetedByID String  @db.ObjectId
 }
 
 // model Nodes {

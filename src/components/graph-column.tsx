@@ -5,10 +5,10 @@ import { MiniThumbnail } from "./thumbnail";
 function NodeList({ currentNoteID }: GraphColumnProps) {
   const { data: allNotes, isLoading } = api.notes.get.all.useQuery();
 
-  const addRelation = api.relations.create.useMutation({});
+  // const addRelation = api.register.create.useMutation({});
 
-  const [showInput, setShowInput] = useState<string, null>(null);
-  const [legend, setLegend] = useState("");
+  const [showInput, setShowInput] = useState<string | null>(null);
+  // const [legend, setLegend] = useState("");
 
   return (
     <>

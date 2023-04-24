@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-type Note = { id: string; title: string };
+type Note = { id: string; title: string | null };
 
 type ThumbnailProps = {
   note: Note;

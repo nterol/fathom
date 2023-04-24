@@ -17,7 +17,7 @@ export async function getStaticProps(
   });
   const id = ctx.params?.noteID as string;
 
-  await helpers.notes.get.byIDWithGraph.prefetch({ id });
+  await helpers.notes.get.byID.prefetch({ id });
 
   return {
     props: {
@@ -43,7 +43,7 @@ export const getStaticPaths = async () => {
 export default function NotePage({
   id,
 }: InferGetStaticPropsType<typeof getStaticProps>) {
-  const postQuery = api.notes.get.byIDWithGraph.useQuery({ id });
+  const postQuery = api.notes.get.byID.useQuery({ id });
 
   if (postQuery.status !== "success") {
     return <div>If you&amp;re seeing this something went very very wrong</div>;
