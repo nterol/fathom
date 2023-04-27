@@ -1,3 +1,4 @@
+import { AddNoteButton } from "@/components/add-note";
 import { TrashIcon } from "@/components/icons";
 import { Thumbnail } from "@/components/thumbnail";
 import { api } from "@/utils/api";
@@ -59,12 +60,7 @@ export default function Home() {
               ))
             : null}
         </section>
-        <Link
-          className="inline-block max-w-fit rounded-lg bg-green-600 px-4 py-1.5 text-base font-semibold leading-7 text-white shadow-sm ring-1 ring-green-600 hover:bg-green-700 hover:ring-green-700"
-          href="/new-note"
-        >
-          Add an note
-        </Link>
+        <AddNoteButton />
       </main>
     </>
   );

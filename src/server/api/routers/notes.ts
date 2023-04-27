@@ -6,19 +6,20 @@ const noteInput = {
     .string()
     .min(5, { message: "Must be 5 or more characters or length" })
     .max(200, { message: "Oh ti a cru on pouvait raconter ta vie fdp ?" })
-    .trim(),
-  description: z.string().trim(),
+    .trim()
+    .optional(),
+  description: z.string().trim().optional(),
 };
 
 export const notesRouter = router({
   create: publicProcedure
     .input(z.object(noteInput))
-    .mutation(async ({ ctx, input: { title, description } }) => {
+    .mutation(async ({ ctx, input }) => {
       try {
         return await ctx.prisma.notes.create({
           data: {
-            title,
-            description,
+            title: input.title ?? "",
+            description: input.description ?? "",
           },
         });
       } catch (error) {
