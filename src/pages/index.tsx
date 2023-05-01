@@ -1,15 +1,14 @@
-import { AddNoteButton } from "@/components/add-note";
+import Head from "next/head";
+import { api } from "@/utils/api";
+
+import { AddNoteButton } from "@/components/add-note-button";
 import { TrashIcon } from "@/components/icons";
 import { Thumbnail } from "@/components/thumbnail";
-import { api } from "@/utils/api";
-import Head from "next/head";
-import Link from "next/link";
 
 function useAllNotes(): {
   allNotes: { id: string; title: string | null }[] | undefined;
   isLoading: boolean;
 } {
-  // const apiContext = api.useContext();
   const { data: allNotes, isLoading } = api.notes.get.all.useQuery();
 
   return { allNotes, isLoading };
@@ -17,10 +16,24 @@ function useAllNotes(): {
 
 export default function Home() {
   const { allNotes = [], isLoading } = useAllNotes();
-
+  const apiContext = api.useContext();
   console.log(allNotes);
 
-  const deleteNote = api.notes.delete.useMutation({});
+  apiContext;
+
+  const deleteNote = api.notes.delete.useMutation({
+    onMutate: async () => {
+      await apiContext.notes.get.all.cancel();
+      const optimistic = apiContext.notes.get.all.getData();
+      if (!optimistic) {
+        return;
+      }
+      apiContext.notes.get.all.setData(undefined, optimistic);
+    },
+    onSettled: async () => {
+      await apiContext.notes.get.all.invalidate();
+    },
+  });
 
   function handleDelete(id: string) {
     return () => {

@@ -1,7 +1,10 @@
 import { api } from "@/utils/api";
+import { useRouter } from "next/router";
 
-function useAddNewNote(): ReturnType<typeof api.notes.create.useMutation> {
-  const apiContext = api.useContext();
+function useAddNewNote(
+  apiContext: ReturnType<typeof api.useContext>
+): ReturnType<typeof api.notes.create.useMutation> {
+  const router = useRouter();
 
   const addNewNote = api.notes.create.useMutation({
     onMutate: async () => {
@@ -12,8 +15,10 @@ function useAddNewNote(): ReturnType<typeof api.notes.create.useMutation> {
         apiContext.notes.get.all.setData(undefined, optimisitcUpdate);
       }
     },
-    onSettled: async () => {
+    onSettled: async (data) => {
       await apiContext.notes.get.all.invalidate();
+      if (!data?.id) return;
+      await router.push(`/note/${data.id}`);
     },
   });
 
@@ -21,10 +26,12 @@ function useAddNewNote(): ReturnType<typeof api.notes.create.useMutation> {
 }
 
 export function AddNoteButton() {
-  const addNewNote = useAddNewNote();
+  const apiContext = api.useContext();
+  const addNewNote = useAddNewNote(apiContext);
+
   function handleAddNote() {
-    const res = addNewNote.mutate({});
-    console.log({ res });
+    const noteNumber = 1 + (apiContext.notes.get.all.getData()?.length ?? 0);
+    addNewNote.mutate({ title: `My new note #${noteNumber}` });
   }
   return (
     <button
