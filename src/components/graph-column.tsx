@@ -1,6 +1,7 @@
 import { api } from "@/utils/api";
 import { useEffect, useState } from "react";
 import { MiniThumbnail } from "./thumbnail";
+import { MiniGraphView } from "./mini-graph-view";
 
 function NodeList({ currentNoteID }: GraphColumnProps) {
   const { data: allNotes, isLoading } = api.notes.get.all.useQuery();
@@ -51,7 +52,7 @@ export function GraphColumn({ currentNoteID }: GraphColumnProps) {
 
   return (
     <section className="flex w-[20%] min-w-[300px] flex-col gap-4 rounded-lg bg-blue-200 p-4">
-      <div className="h-40 w-full rounded-lg bg-red-200" />
+      <MiniGraphView />
       {trigger ? (
         <NodeList currentNoteID={currentNoteID} />
       ) : (

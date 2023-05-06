@@ -5,21 +5,13 @@ import { AddNoteButton } from "@/components/add-note-button";
 import { TrashIcon } from "@/components/icons";
 import { Thumbnail } from "@/components/thumbnail";
 
-function useAllNotes(): {
-  allNotes: { id: string; title: string | null }[] | undefined;
-  isLoading: boolean;
-} {
-  const { data: allNotes, isLoading } = api.notes.get.all.useQuery();
-
-  return { allNotes, isLoading };
-}
-
 export default function Home() {
-  const { allNotes = [], isLoading } = useAllNotes();
+  const {
+    data: allNotes,
+    isLoading,
+    isFetching,
+  } = api.notes.get.all.useQuery();
   const apiContext = api.useContext();
-  console.log(allNotes);
-
-  apiContext;
 
   const deleteNote = api.notes.delete.useMutation({
     onMutate: async () => {
@@ -41,6 +33,8 @@ export default function Home() {
     };
   }
 
+  console.log({ allNotes, isFetching, isLoading });
+
   return (
     <>
       <Head>
@@ -51,14 +45,17 @@ export default function Home() {
       <main className="mx-auto flex min-h-screen flex-col justify-center gap-4 py-10 md:container">
         <h1>All notes</h1>
         <section className="flex flex-col gap-8">
-          {isLoading && !allNotes ? (
-            <div
+          {(isFetching || isLoading) && !allNotes ? (
+            <><div
               style={{ "--delay": `${Math.random()}s` } as React.CSSProperties}
-              className="placeholder h-11 w-1/2 rounded-lg bg-slate-500"
-            />
+              className="placeholder h-11 w-full rounded-lg bg-slate-500"
+            /><div
+            style={{ "--delay": `${Math.random()}s` } as React.CSSProperties}
+            className="placeholder h-11 w-full rounded-lg bg-slate-500"
+          /></>
           ) : null}
 
-          {allNotes && allNotes.length === 0 ? (
+          {!isLoading && !isFetching && allNotes && allNotes.length === 0 ? (
             <p className="bg-green-50 p-7 text-xl font-medium text-green-900">
               ✏️ &nbsp; You dont have any notes yet!
             </p>
