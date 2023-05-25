@@ -20,6 +20,13 @@ export const notesRouter = router({
           data: {
             title: input.title ?? "",
             description: input.description ?? "",
+            content: [
+              {
+                type: "heading",
+                attrs: { level: 1 },
+                content: [{ type: "text", text: input.title }],
+              },
+            ],
           },
         });
       } catch (error) {
@@ -28,16 +35,56 @@ export const notesRouter = router({
     }),
   get: router({
     byID: publicProcedure
-      .input(z.object({ id: z.string() }))
+      .input(
+        z.object({
+          id: z.string(),
+          withGraph: z.boolean().default(false),
+        })
+      )
       .query(async ({ ctx, input }) => {
         try {
-          const { id } = input;
-          return await ctx.prisma.notes.findUnique({ where: { id } });
+          const { id, withGraph } = input;
+          const note = await ctx.prisma.notes.findUnique({
+            where: { id },
+            select: {
+              id: true,
+              createdAt: true,
+              targets: withGraph,
+              sources: withGraph,
+              title: true,
+              description: true,
+              content: true,
+            },
+          });
+          if (!withGraph) return note;
+          if (!note) return note;
+
+          const { targets, sources, id: noteID } = note;
+
+          const allRelations = [...targets, ...sources];
+
+          const everyID = allRelations.flatMap(({ targetID, sourceID }) => [
+            targetID,
+            sourceID,
+          ]);
+          const nodes = [...new Set([noteID, ...everyID])].map((id) => ({
+            id,
+          }));
+
+          const edges = allRelations.map(({ sourceID, targetID, ...rest }) => ({
+            ...rest,
+            source: sourceID,
+            target: targetID,
+          }));
+
+          const graph = { nodes, edges };
+          console.log(graph);
+
+          return { ...note, graph };
         } catch (error) {
           console.log("Error lol");
         }
       }),
-
     all: publicProcedure.query(async ({ ctx }) => {
       try {
         return await ctx.prisma.notes.findMany({

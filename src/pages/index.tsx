@@ -1,9 +1,11 @@
 import Head from "next/head";
 import { api } from "@/utils/api";
+import c from "classnames";
 
 import { AddNoteButton } from "@/components/add-note-button";
 import { TrashIcon } from "@/components/icons";
 import { Thumbnail } from "@/components/thumbnail";
+import s from "@/styles/placeholder.module.css";
 
 export default function Home() {
   const {
@@ -46,13 +48,25 @@ export default function Home() {
         <h1>All notes</h1>
         <section className="flex flex-col gap-8">
           {(isFetching || isLoading) && !allNotes ? (
-            <><div
-              style={{ "--delay": `${Math.random()}s` } as React.CSSProperties}
-              className="placeholder h-11 w-full rounded-lg bg-slate-500"
-            /><div
-            style={{ "--delay": `${Math.random()}s` } as React.CSSProperties}
-            className="placeholder h-11 w-full rounded-lg bg-slate-500"
-          /></>
+            <>
+              <div
+                style={
+                  { "--delay": `${Math.random()}s` } as React.CSSProperties
+                }
+                className={`${
+                  s.placeholder ?? ""
+                } h-11 w-full rounded-lg bg-slate-500`}
+              />
+              <div
+                style={
+                  { "--delay": `${Math.random()}s` } as React.CSSProperties
+                }
+                className={c(
+                  s.placeholder,
+                  "h-11 w-full rounded-lg bg-slate-500"
+                )}
+              />
+            </>
           ) : null}
 
           {!isLoading && !isFetching && allNotes && allNotes.length === 0 ? (

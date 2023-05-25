@@ -1,36 +1,31 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-body {
-  margin: 0;
-  position: fixed;
-  overflow: hidden;
+.editor div {
+  height: 100%;
   width: 100%;
 }
 
-/* .ProseMirror {
+.editor .ProseMirror {
   border: 1px solid;
+  padding: 1em;
 }
 
-.ProseMirror h1 {
+.editor h1 {
   @apply mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl;
 }
 
-.ProseMirror h2 {
+.editor h2 {
   @apply text-4xl font-extrabold;
 }
 
-.ProseMirror h3 {
+.editor h3 {
   @apply text-3xl font-bold;
 }
 
-.ProseMirror h4 {
+.editor h4 {
   @apply text-2xl font-bold;
 }
-.ProseMirror h5 {
+.editor h5 {
   @apply text-xl font-bold;
 }
-.ProseMirror h6 {
+.editor h6 {
   @apply text-lg font-bold;
-} */
+}

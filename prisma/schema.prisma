@@ -18,33 +18,21 @@ model Notes {
     tagIDs      String[]    @db.ObjectId
     tags        Tags[]      @relation(fields: [tagIDs], references: [id])
     targets     Relations[] @relation("targets")
-    targetedBy  Relations[] @relation("targetedBy")
+    sources     Relations[] @relation("sources")
+    content     Json
+    Relations   Relations[]
 }
 
 model Relations {
-    id           String  @id @default(auto()) @map("_id") @db.ObjectId
-    info         String?
-    targeter     Notes   @relation("targets", fields: [targeterID], references: [id])
-    targeterID   String  @db.ObjectId
-    targetedBy   Notes   @relation("targetedBy", fields: [targetedByID], references: [id])
-    targetedByID String  @db.ObjectId
+    id       String  @id @default(auto()) @map("_id") @db.ObjectId
+    info     String?
+    target   Notes   @relation("targets", fields: [targetID], references: [id], onUpdate: NoAction, onDelete: Cascade)
+    targetID String  @db.ObjectId
+    source   Notes   @relation("sources", fields: [sourceID], references: [id], onUpdate: NoAction, onDelete: Cascade)
+    sourceID String  @db.ObjectId
+    Notes    Notes?  @relation(fields: [notesId], references: [id])
+    notesId  String? @db.ObjectId
 }
-
-// model Nodes {
-//     id         String     @id @default(auto()) @map("_id") @db.ObjectId
-//     name       String
-//     targets    Register[] @relation("targets")
-//     targetedBy Register[] @relation("targetedBy")
-// }
-
-// model Register {
-//     id           String @id @default(auto()) @map("_id") @db.ObjectId
-//     legend       String
-//     targeter     Nodes  @relation("targets", fields: [targeterID], references: [id])
-//     targeterID   String @db.ObjectId
-//     targetedBy   Nodes  @relation("targetedBy", fields: [targetedByID], references: [id])
-//     targetedByID String @db.ObjectId
-// }
 
 model Tags {
     id      String   @id @default(auto()) @map("_id") @db.ObjectId

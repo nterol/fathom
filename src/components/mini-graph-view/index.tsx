@@ -4,6 +4,7 @@ import { select, type Simulation } from "d3";
 import { Edge, Node } from "./graph-elements";
 import { initSimulation, updateGraph } from "./utils";
 import { type NodeDatum, type Graph } from "./types";
+import { api } from "@/utils/api";
 
 const graph: Graph = {
   // TODO: use d3.map to iterate over object instead of string
@@ -18,9 +19,19 @@ const graph: Graph = {
   nodes: [{ id: "A" }, { id: "B" }, { id: "C" }],
 };
 
-export function MiniGraphView(): JSX.Element {
+export function MiniGraphView({
+  currentNoteID,
+}: {
+  currentNoteID: string;
+}): JSX.Element {
   const containerRef = useRef<HTMLDivElement>(null);
   const simulation = useRef<Simulation<NodeDatum, undefined> | null>(null);
+
+  const ctx = api.useContext();
+
+  const data = ctx.notes.get.byID.getData({ id: currentNoteID });
+
+  console.log({ fromGraph: data });
 
   const { nodes, links } = graph;
 

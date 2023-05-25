@@ -2,6 +2,7 @@ import { api } from "@/utils/api";
 import { useEffect, useState } from "react";
 import { MiniThumbnail } from "./thumbnail";
 import { MiniGraphView } from "./mini-graph-view";
+import s from "@/styles/placeholder.module.css";
 
 function NodeList({ currentNoteID }: GraphColumnProps) {
   const { data: allNotes, isLoading } = api.notes.get.all.useQuery();
@@ -16,7 +17,9 @@ function NodeList({ currentNoteID }: GraphColumnProps) {
       {isLoading && !allNotes ? (
         <div
           style={{ "--delay": `${Math.random()}s` } as React.CSSProperties}
-          className="placeholder h-11 w-1/2 rounded-lg bg-slate-500"
+          className={`${
+            s.placeholder ?? ""
+          } h-11 w-1/2 rounded-lg bg-slate-500`}
         />
       ) : null}
       {allNotes
@@ -52,7 +55,7 @@ export function GraphColumn({ currentNoteID }: GraphColumnProps) {
 
   return (
     <section className="flex w-[20%] min-w-[300px] flex-col gap-4 rounded-lg bg-blue-200 p-4">
-      <MiniGraphView />
+      <MiniGraphView currentNoteID={currentNoteID} />
       {trigger ? (
         <NodeList currentNoteID={currentNoteID} />
       ) : (
